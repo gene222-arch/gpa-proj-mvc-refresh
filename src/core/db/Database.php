@@ -52,8 +52,7 @@ class Database
 			$instance->up();
 			$this->log('Applied migration' . $fileName);	
 						
-			$newMigrations[] = $fileName;	
-					
+			$newMigrations[] = $fileName;				
 		}
 
 		if ( !empty($newMigrations) ) {
