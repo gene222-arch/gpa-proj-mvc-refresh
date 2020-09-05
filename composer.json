@@ -1,0 +1,19 @@
+{
+    "name": "gpa/mvc-refresh",
+    "authors": [
+        {
+            "name": "Gene Phillip",
+            "email": "genephillip222@gmail.com"
+        }
+    ],
+    "require": {},
+
+    "autoload" : {
+
+    	"psr-4" : {
+
+            "app\\core\\" : "./src/core/",
+            "app\\controllers\\" : "./src/controllers/"
+    	}
+    }
+}
