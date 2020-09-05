@@ -7,43 +7,47 @@ use app\core\exceptions\NotFoundException;
 class Router 
 {
 
-	public Request $request;
-	public array $routes = [];
+
+	public static Request $request;
+	public static Response $response;
+	public static array $routes = [];
 
 	/**
 	 * Class Constructor
 	 */
-	public function __construct( Request $request )
+	public function __construct( Request $request, Response $response )
 	{
 
-		$this->request = $request;
+		self::$request = $request;
+		self::$response = $response;
 	}
 
 
-	public function get( string $path, $callback )
+	public static function get( string $path, $callback )
 	{
 
-		$this->routes['get'][$path] = $callback;
+		self::$routes['get'][$path] = $callback;
 	}
 
 
-	public function post( string $path, $callback ) 
+	public static function post( string $path, $callback ) 
 	{	
 
-		$this->routes['post'][$path] = $callback;
+		self::$routes['post'][$path] = $callback;
 	}
 
 
-	public function resolve() 
+	public static function resolve() 
 	{
 
-		$path = $this->request->path();
-		$method = $this->request->method();
-		$callback = $this->routes[ $method ][ $path ] ?? false;
+		$path = self::$request->path();
+		$method = self::$request->method();
+		$callback = self::$routes[ $method ][ $path ] ?? false;
 
 
 		if(!$callback) {
 
+			self::$response->responseCode(404);
 			throw new NotFoundException;
 		}
 
@@ -55,13 +59,12 @@ class Router
 		if ( is_array($callback) ) {
 
 			$callback[0] = new $callback[0]();
+			Application::$app->controller = $callback[0];
 		}
 
-		return call_user_func($callback);
+		return call_user_func($callback, self::$request, self::$response);
 
 	}
-
-
 
 
 }

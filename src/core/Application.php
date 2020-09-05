@@ -2,6 +2,10 @@
 
 namespace app\core;
 
+use app\core\db\Database;
+use app\core\models\UserModel;
+
+use app\core\controller\Controller;
 
 class Application 
 {
@@ -10,30 +14,38 @@ class Application
 	public static Application $app;
 	public Router $router;
 	public Request $request;
-	public ?Controller $controller;
+	public Response $response;
+	public Database $db;
+	public ?Controller $controller = null;
 	public View $view;
-
+	public ?UserModel $user = null;
+	public string $userClass;
 	/**
 	 * Class Constructor
 	 */
-	public function __construct( string $ROOT_DIR )
-	{
-			
-		self::$ROOT_DIR = $ROOT_DIR;
+	public function __construct(array $config = [])	{
+//Main
+
+		self::$ROOT_DIR = dirname(dirname(__DIR__));
 		self::$app = $this;
-		$this->request = new Request();
-		$this->router = new Router($this->request);
-		$this->controller = new Controller();
+//Core
+		$this->request  = new Request();
+		$this->response = new Response();
+		$this->router = new Router($this->request, $this->response);
+		$this->controller = new Controller;
 		$this->view = new View();
+//Model
+		$this->userClass = $config['userClass'];
 
+//Db
+		$this->db = new Database($config['db']);
 	}
-
 
 	public function run() {
 
 		try {
 			
-			echo $this->router->resolve();
+			echo Router::resolve();
 
 		} catch (\Exception $e) {
 			
@@ -43,7 +55,6 @@ class Application
 		}
 
 	}
-
 
 
 }

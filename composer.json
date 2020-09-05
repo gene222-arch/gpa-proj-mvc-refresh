@@ -6,14 +6,21 @@
             "email": "genephillip222@gmail.com"
         }
     ],
-    "require": {},
+    "require": {
+        "vlucas/phpdotenv": "^5.1"
+    },
 
     "autoload" : {
 
     	"psr-4" : {
 
             "app\\core\\" : "./src/core/",
-            "app\\controllers\\" : "./src/controllers/"
+            "app\\core\\db\\" : "./src/core/",
+            "app\\core\\models\\": "./src/core/",
+            "app\\core\\controller\\" : "./src/core/",
+
+            "app\\controllers\\" : "./src/controllers/",
+            "app\\models\\" : "./src/models/"
     	}
     }
 }

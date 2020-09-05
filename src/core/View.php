@@ -9,7 +9,6 @@ class View
 	public string $page_title = '';
 	public string $layOut = 'main.blade';
 
-
 	public function renderView(string $view, $data = [])
 	{
 
@@ -36,6 +35,7 @@ class View
 
 	private function layout()
 	{
+		
 		$layout = $this->layOut;
 
 		if (Application::$app->controller)	{
