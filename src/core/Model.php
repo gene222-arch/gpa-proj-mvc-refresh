@@ -108,13 +108,13 @@ abstract class Model
 	}
 
 
-	public function get_error_message( $fieldName ): string {
+	public function get_error_message( string $fieldName ): string {
 
 		return $this->errors[$fieldName][0] ?? '';
 	}
 
 
-	public function has_error_message( $fieldName ): bool {
+	public function has_error_message( string $fieldName ): bool {
 
 		return !empty($this->errors[$fieldName]);
 	}

@@ -7,9 +7,9 @@ use app\core\db\DatabaseModel;
 class User extends DatabaseModel
 {	
 
-	protected string $email = '';
-	protected string $password = '';
-	protected string $confirmPassword = '';
+	public string $email = '';
+	public string $password = '';
+	public string $confirmPassword = '';
 
 
 	public function table_name(): string {
@@ -26,19 +26,19 @@ class User extends DatabaseModel
 
 	public function field_names(): array {
 
-		return [];
+		return [ 'email', 'password' ];
 	}
 
 
 	public function setLabels(): array {
 
-		return [];
+		return [ 'email' => 'Email', 'password' => 'Password', 'confirmPassword' => 'Confirm Password'];
 	}
 
 
-	public function getLabel(): string {
+	public function getLabel( string $labelName ): string {
 
-		return '';
+		return $this->setLabels()[$labelName];
 	}
 
 

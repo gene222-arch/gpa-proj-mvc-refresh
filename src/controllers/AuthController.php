@@ -5,6 +5,8 @@ namespace app\controllers;
 use app\core\controller\Controller;
 use app\core\Request;
 use app\core\Response;
+use app\models\User;
+use app\models\LoginForm;
 
 
 class AuthController extends Controller
@@ -30,7 +32,7 @@ class AuthController extends Controller
 
 		}		
 		
-		return $this->render('register');
+		return $this->render('register', ['model' => $register]);
 	}
 
 
@@ -54,7 +56,7 @@ class AuthController extends Controller
 
 		}		
 		
-		return $this->render('login');
+		return $this->render('login', ['model' => $login]);
 	}
 
 

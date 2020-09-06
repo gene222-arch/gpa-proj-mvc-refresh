@@ -33,7 +33,8 @@ class SiteController extends Controller
 
 		}
 
-		return $this->render('contact');	
+		return $this->render('contact', ['model' => $contact]);	
+		
 	}
 
 

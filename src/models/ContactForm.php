@@ -8,9 +8,9 @@ class ContactForm extends DatabaseModel
 {
 
 
-	protected string $email = '';
-	protected string $recipient = '';
-	protected string $message = '';
+	public string $email = '';
+	public string $recipient = '';
+	public string $message = '';
 
 
 	public function table_name(): string {
@@ -35,8 +35,8 @@ class ContactForm extends DatabaseModel
 
 		return [
 
-			'email' => 'Your Email',
-			'recipient' => 'Recipient/s',
+			'email' => 'Email',
+			'recipient' => 'Recipient',
 			'message' => 'Your Message'
 		];
 	}

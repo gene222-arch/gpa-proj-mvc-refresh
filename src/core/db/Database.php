@@ -3,6 +3,7 @@
 namespace app\core\db;
 
 use \PDO;
+use app\core\Application;
 
 class Database 
 {
@@ -30,9 +31,9 @@ class Database
 		$this->create_migrations_table();
 
 		$appliedMigrations = $this->fetch_applied_migrations();
-		$migrationFiles = scandir(Application::ROOT_DIR . '/src/migrations');
+		$migrationFiles = scandir(Application::$ROOT_DIR . '/src/migrations');
 
-		$toApplyMigrations = array_diff($appliedMigrations, $onHoldMigrations);
+		$toApplyMigrations = array_diff( $migrationFiles, $appliedMigrations );
 
 		$newMigrations = [];
 
@@ -41,58 +42,45 @@ class Database
 			if ($fileName === '.' || $fileName === '..') {
 
 				continue;
-			}
 
-			require_once Application::$ROOT_DIR . '/src/core/migrations/' . $fileName;
+			} else {
 
-			$className = pathinfo($fileName, PATHINFO_FILENAME);
-			$instance = new $className();
+				require_once Application::$ROOT_DIR . '/src/migrations/' . $fileName;
 
-			$this->log('Applying migration' . $fileName);
-			$instance->up();
-			$this->log('Applied migration' . $fileName);	
-						
-			$newMigrations[] = $fileName;				
+				$className = pathinfo($fileName, PATHINFO_FILENAME);
+				$instance = new $className();
+
+				echo "<pre>";
+				$this->log(' Applying migration <br>' . $fileName);
+				$instance->up();
+				$this->log(' Applied migration <br>' . $fileName);	
+				echo "</pre>";
+							
+				$newMigrations[] = $fileName;
+			}				
 		}
+
 
 		if ( !empty($newMigrations) ) {
 
 			$this->save_migration( $newMigrations );
-		}
 
+		} else
 
-		echo "All migrations are applied";
-
-	}
-
-
-	public function fetch_applied_migrations() {
-
-		$statement = "SELECT * FROM migrations";
-		$statement->execute();
-
-		return $statement->fetchAll(PDO::FETCH_COLUMN);
-	}
-
-
-	public function save_migration( array $migrations ) {
-
-		$sqlStatement = implode(", ", array_map(fn($migration) => "('$migration')" , $migrations));
-		$statement = $this->prepare($sqlStatement);
-
-		return $statement->execute();
+			echo "All migrations are applied";
+		
 	}
 
 
 	public function create_database() {
 
-		$this->pdo->exec("CREATE DATABASE IF NOT EXISTS mvc_refresh");
+		$this->exec("CREATE DATABASE IF NOT EXISTS mvc_refresh");
 	}
 
 
 	public function create_migrations_table() {
 
-		$this->pdo->exec(' CREATE TABLE IF NOT EXISTS migrations (
+		$this->exec(' CREATE TABLE IF NOT EXISTS migrations (
 			migration_id INT(11) AUTO_INCREMENT PRIMARY KEY,
 			migration_name VARCHAR(255) NOT NULL,
 			created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP) 
@@ -100,15 +88,42 @@ class Database
 	}
 
 
-	public function prepare( string $sqlStatement) {
+	public function save_migration( array $migrations = [] ) {
 
-		return $this->pdo->prepare( $sqlStatement);
+		$sqlStatement = "INSERT INTO 
+							`migrations` (migration_name) 
+						VALUES " 
+						. implode(", ", array_map(fn($m) => "('$m')" , $migrations) );
+
+		$statement = $this->prepare($sqlStatement);
+		$statement->execute();
+	}
+
+
+	public function fetch_applied_migrations() {
+
+		$statement = $this->prepare("SELECT migration_name FROM migrations");
+		$statement->execute();
+
+		return $statement->fetchAll(PDO::FETCH_COLUMN);
+	}
+
+
+	public function prepare( string $sqlStatement ) {
+
+		return $this->pdo->prepare( $sqlStatement );
 	}
 
 
 	public function log( $message ) {
 
 		echo date('Y m d h:i:s A') . ' ' . $message . PHP_EOL;
+	}
+
+
+	public function exec( $ddlStatement ) {
+
+		$this->pdo->exec( $ddlStatement );
 	}
 
 	

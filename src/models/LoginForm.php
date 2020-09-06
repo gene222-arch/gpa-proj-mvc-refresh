@@ -2,25 +2,29 @@
 
 namespace app\models;
 
-use app\core\db\Model;
+use app\core\models\Model;
 
 
 class LoginForm extends Model
 {	
 
-	protected string $email = '';
-	protected string $password = '';
+	public string $email = '';
+	public string $password = '';
 
 
 	public function setLabels(): array {
 
-		return [];
+		return [
+			'email' => 'Email',
+			'password' => 'Password'
+
+		];
 	}
 
 
-	public function getLabel(): string {
+	public function getLabel( string $labelName ): string {
 
-		return '';
+		return $this->setLabels()[$labelName];
 	}
 
 

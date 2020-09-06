@@ -1,20 +1,20 @@
-<h1>Register Account</h1>
+<?php 
+  
+  /**
+    * @var $this app/core/View
+    * @var $model app\models\ContactForm
+    * @var $form app\core\forms\Form
+    */
+  use app\core\forms\Form;
+  $this->page_title = 'Login';  ?>
 
-<form action="" method="POST">
-  <div class="form-group">
-    <label for="exampleInputEmail1">Email address</label>
-    <input type="email" name="email" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp">
-    <small id="emailHelp" class="form-text text-muted">We'll never share your email with anyone else.</small>
-  </div>
+ <center><h1 class="mb-5">Register</h1></center>
 
-  <div class="form-group">
-    <label for="exampleInputPassword1">Password</label>
-    <input type="password" name="password" class="form-control" id="exampleInputPassword1">
-  </div>
-  <div class="form-group">
-    <label for="exampleInputPassword1">Confirm Password</label>
-    <input type="password" name="confirmPassword" class="form-control" id="exampleInputPassword1">
-  </div>
+ <?php $form = Form::begin("POST"); ?>
 
-  <button type="submit" class="btn btn-primary">Submit</button>
-</form>
+ <?php echo $form::input_field('email', $model ) ?>
+ <?php echo $form::input_field('password', $model)->password() ?>
+ <?php echo $form::input_field('confirmPassword', $model)->password() ?>
+ <?php echo $form::button('submit', 'primary', 'login', 'login') ?>
+
+ <?php Form::end() ?>
