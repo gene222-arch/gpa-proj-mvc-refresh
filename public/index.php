@@ -42,6 +42,7 @@ Router::post('/login', [AuthController::class, 'login']);
 
 Router::get('/logout', [AuthController::class, 'logout']);
 
-$app->run();
+Router::get('/userprofile', [AuthController::class, 'user_profile']);
 
+$app->run();
 

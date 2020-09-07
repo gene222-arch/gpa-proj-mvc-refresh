@@ -45,7 +45,7 @@ class Router
 		$callback = self::$routes[ $method ][ $path ] ?? false;
 
 
-		if(!$callback) {
+		if ( !$callback ) {
 
 			self::$response->responseCode(404);
 			throw new NotFoundException;
@@ -56,10 +56,17 @@ class Router
 			return Application::$app->controller->render($callback);
 		} 
 
+/*Before view renders, set controller first*/
 		if ( is_array($callback) ) {
 
 			$callback[0] = new $callback[0]();
 			Application::$app->controller = $callback[0];
+			$callback[0]->actions[] = $callback[1];
+
+			foreach ( Application::$app->controller->get_middleware() as $middlewares ) {
+				$middlewares->execute_middleware();
+			}
+
 		}
 
 		return call_user_func($callback, self::$request, self::$response);

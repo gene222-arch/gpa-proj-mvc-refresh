@@ -15,6 +15,7 @@ class Application
 	public Router $router;
 	public Request $request;
 	public Response $response;
+	public Session $session;
 	public Database $db;
 	public ?Controller $controller = null;
 	public View $view;
@@ -32,14 +33,24 @@ class Application
 		$this->request  = new Request();
 		$this->response = new Response();
 		$this->router = new Router($this->request, $this->response);
-		$this->controller = new Controller;
+		$this->session = new Session();
 		$this->view = new View();
 //Model
 		$this->userClass = $config['userClass'];
 
+
 //Db
 		$this->db = new Database($config['db']);
+		$user_id = $this->session->get_user("user");
+
+		if ( $user_id ) {
+
+			$userPrimaryKey = $this->userClass::primary_key();
+			$this->user = $this->userClass::find([$userPrimaryKey => $user_id]);
+		}
+
 	}
+
 
 	public function run() {
 
@@ -56,5 +67,39 @@ class Application
 
 	}
 
+
+/**
+  * @param $user app\models\User --- after --- app\models\LoginForm::login()
+  */
+	public function login( UserModel $user ) {
+
+		try {
+
+			$this->user = $user;
+
+			$primaryKey = $this->user->primary_key();
+			$pkValue = $this->user->{$primaryKey};
+			$this->session->set_user("user", $pkValue);
+
+			return true;
+
+		} catch (\Exception $e) {
+			
+
+		}
+	}
+
+
+	public function isGuest() {
+
+		return empty($this->user);
+	}
+
+
+	public function logout() {
+
+		$this->session->delete_user("user");
+		$this->user = null;
+	}
 
 }

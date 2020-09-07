@@ -3,12 +3,14 @@
 namespace app\core\controller;
 
 use app\core\Application;
+use app\core\middlewares\Basemiddlewares;
 
-class Controller 
+abstract class Controller 
 {
 
 	public string $layOut = 'main.blade';
-
+	public array $actions = [];
+	public array $middleware = [];
 
 	public function set_lay_out(string $layOut): void
 	{
@@ -21,6 +23,18 @@ class Controller
 	{
 
 		return Application::$app->view->renderView($view, $data);
+	}
+
+
+	public function set_middleware( Basemiddlewares $middlewares ) {
+
+		$this->middleware[] = $middlewares;
+	}
+
+
+	public function get_middleware() {
+
+		return $this->middleware;
 	}
 
 

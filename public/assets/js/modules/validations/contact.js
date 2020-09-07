@@ -3,8 +3,8 @@ export let contactValidate = {
 
   email : function() {
  
-    let str = this.value;
-    let res = str.match(/[a-z0-9._%+-]+@[a-z0-9]+\.[a-z]{2,3}$/g);
+    let email = this.value;
+    let res = email.match(/[a-z0-9._%+-]+@[a-z0-9]+\.[a-z]{2,3}$/g);
     let feedback = document.querySelector('.feedback-email');
 
     switch (Boolean(res)) {
@@ -50,9 +50,10 @@ export let contactValidate = {
   },
 
   recipient: function() {
- 
-    let str = this.value;
-    let res = str.match(/[a-z0-9._%+-]+@[a-z0-9]+\.[a-z]{2,3}$/g);
+     
+
+    let recipient = this.value;
+    let res = recipient.match(/[a-z0-9._%+-]+@[a-z0-9]+\.[a-z]{2,3}$/g);
     let feedback = document.querySelector('.feedback-recipient');
 
     switch (Boolean(res)) {
@@ -93,7 +94,7 @@ export let contactValidate = {
           feedback.classList.add('invalid-feedback');
         }
     }
- }
+  },
 
 
 }

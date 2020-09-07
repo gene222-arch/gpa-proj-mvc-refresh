@@ -2,9 +2,9 @@
 
 namespace app\models;
 
-use app\core\db\DatabaseModel;
+use app\core\db\DatabaseORM;
 
-class ContactForm extends DatabaseModel
+class ContactForm extends DatabaseORM
 {
 
 
@@ -13,21 +13,27 @@ class ContactForm extends DatabaseModel
 	public string $message = '';
 
 
-	public function table_name(): string {
+	public static function table_name(): string {
 
-		return 'table_name';
+		return 'contact';
 	}
 
 
-	public function primary_key(): string {
+	public static function primary_key(): string {
 
 		return 'contact_id';
 	}
 
 
-	public function field_names(): array {
+	public static function field_names(): array {
 
-		return [ 'email', 'subject', 'message'];
+		return [ 'user_contact_id', 'email', 'recipient', 'message'];
+	}
+
+
+	public function send() {
+
+		return parent::save();
 	}
 
 
@@ -59,10 +65,5 @@ class ContactForm extends DatabaseModel
 		];
 	}
 
-
-	public function send() {
-
-		return parent::save();
-	}
 
 }

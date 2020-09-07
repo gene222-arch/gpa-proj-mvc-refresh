@@ -11,13 +11,18 @@ use app\core\Request;
 
 abstract class Model 
 {
-
+/*INSERT*/
 	public const RULE_REQUIRED = 'required';
 	public const RULE_EMAIL = 'email';
 	public const RULE_MIN = 'min';
 	public const RULE_MAX = 'max';
 	public const RULE_MATCH = 'match';
 	public const RULE_UNIQUE = 'unique';
+
+/*SELECT*/
+	public const RULE_NOT_EXISTS = 'notExists';
+	public const RULE_NOT_MATCH = 'notMatch';
+
 	public array $errors = [];
 
 
@@ -77,17 +82,21 @@ abstract class Model
 					$this->set_error_message($fieldName, self::RULE_MAX, $rule);					
 				}
 
-				// if( $ruleName === self::RULE_UNIQUE ) {
+				if ( $ruleName === self::RULE_MATCH && ($this->password !== $property)) {
 
-				// 	$instance = new $rule['className']();
+					$this->set_error_message($fieldName, self::RULE_MATCH, $rule);
+				}
 
-				// 	$instance->find([$fieldName => $property]);
+				if( $ruleName === self::RULE_UNIQUE ) {
 
-				// 	if ($instance->{$fieldName}) {
+					$instance = new $rule['className']();
+					$is_exists = $instance::find([$fieldName => $property]);
 
-				// 		$this->set_error_message($fieldName, self::RULE_UNIQUE, ['field' => $fieldName]);
-				// 	}				
-				// }				
+					if ($is_exists) {
+
+						$this->set_error_message($fieldName, self::RULE_UNIQUE, ['field' => $fieldName]);
+					}				
+				}				
 			}
 		}
 
@@ -105,6 +114,19 @@ abstract class Model
 		}
 
 		$this->errors[$fieldName][] = $errorMessage;
+	}
+
+
+	public function set_error_message_on_select(string $fieldName, array $rule = [] ) {
+
+		$selectErrorMessage = $this->error_message_select()[$rule["rule"]];
+
+		foreach ( $rule as $ruleName => $value ) {
+
+			$selectErrorMessage = str_replace("{{$ruleName}}", ($value) , $selectErrorMessage);
+		}	
+
+		$this->errors[$fieldName][] = $selectErrorMessage;
 	}
 
 
@@ -128,7 +150,20 @@ abstract class Model
 			self::RULE_EMAIL => 'This is not a valid email',
 			self::RULE_MIN => 'The minimum length of this field {min}',
 			self::RULE_MAX => 'The maximum length of this field is {max}',
-			self::RULE_UNIQUE => 'This {field} already exists'
+			self::RULE_UNIQUE => 'This {field} already exists',
+			self::RULE_MATCH => 'This field must match {match}'
+		];
+	}
+
+
+	public function error_message_select(): array {
+
+		return [
+
+			self::RULE_NOT_EXISTS => "This {field} does not exists",
+			self::RULE_NOT_MATCH => "{field} incorrect"
+
+
 		];
 	}
 

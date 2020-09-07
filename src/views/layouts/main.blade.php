@@ -1,3 +1,13 @@
+<?php 
+	
+	/**
+      *  $this app/core/Application
+	  */
+  use app\core\Application;
+
+ ?>
+
+
 <!DOCTYPE html>
 <html>
 <head>
@@ -25,13 +35,30 @@
 	      <li class="nav-item">
 	        <a class="nav-link" href="/contact">Contact Us</a>
 	      </li>
-	      <li class="nav-item">
-	        <a class="nav-link" href="/register"> Signup </a>
-	      </li>	
-	      <li class="nav-item">
-	        <a class="nav-link" href="/login"> Login </a>
-	      </li>
+	      <?php if (!Application::$app->user): ?>
 
+		      <li class="nav-item">
+		        <a class="nav-link" href="/register"> Signup </a>
+		      </li>	
+		      <li class="nav-item">
+		        <a class="nav-link" href="/login"> Login </a>
+		      </li>	    
+
+	      <?php else: ?>
+
+		      <li class="nav-item">
+		        <a class="nav-link" href="/profile"> 
+		        	<?php echo Application::$app->user->display_user(); ?> 
+		        </a>
+		      </li>
+		      <li class="nav-item">
+		        <a class="nav-link" href="/userprofile"> Profile </a>
+		      </li>	
+		      <li class="nav-item">
+		        <a class="nav-link" href="/logout"> Logout </a>
+		      </li>			      	 
+
+		 <?php endif; ?>
 	    </ul>
 
 	  </div>
@@ -40,6 +67,15 @@
 
 
 	<div class="container">
+
+		<?php if ( Application::$app->session->get_flash_message("login") ): ?>
+
+			<div class="alert alert-success" role="alert">
+			  <?php echo Application::$app->session->get_flash_message("login") ?>
+			</div>
+
+		<?php endif; ?>
+
 		{{content}}
 	</div>
 

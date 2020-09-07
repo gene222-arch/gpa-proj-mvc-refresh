@@ -2,9 +2,14 @@
 
 namespace app\models;
 
-use app\core\db\DatabaseModel;
+use app\core\models\UserModel;
 
-class User extends DatabaseModel
+/**
+  * Purpose: Registration
+  */
+
+
+class User extends UserModel
 {	
 
 	public string $email = '';
@@ -12,21 +17,28 @@ class User extends DatabaseModel
 	public string $confirmPassword = '';
 
 
-	public function table_name(): string {
+	public static function table_name(): string {
 
-		return 'table name';
+		return 'users';
 	}
 
 
-	public function primary_key(): string {
+	public static function primary_key(): string {
 
-		return 'id';
+		return 'user_id';
 	}
 
 
-	public function field_names(): array {
+	public static function field_names(): array {
 
-		return [ 'email', 'password' ];
+		return [ 'email', 'password', 'contact_id'];
+	}
+
+
+	public function register() {
+
+		$this->password = password_hash($this->password, PASSWORD_DEFAULT);
+		parent::save();
 	}
 
 
@@ -41,6 +53,11 @@ class User extends DatabaseModel
 		return $this->setLabels()[$labelName];
 	}
 
+
+	public function display_user(): string {
+
+		return $this->email;
+	}
 
 	public function rules(): array {
 
